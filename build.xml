@@ -1,0 +1,44 @@
+<project name = "order-management-test" default = "runTest">
+    <target name = "clean">
+        <delete dir = "build"/>
+    </target>
+
+    <target name = "clearClasses">
+        <delete dir = "build/classes"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="build/classes/test"/>
+        <mkdir dir="build/classes/src"/>
+    </target>
+
+    <target name = "compile" depends = "init">
+        <javac srcdir = "src" destdir = "build/classes/src" includeAntRuntime = "false">
+        </javac>
+    </target>
+
+    <target name = "compileTest" depends = "compile">
+        <javac srcdir = "test" destdir= "build/classes/test"
+               classpath="dependencies/test/junit-4.10.jar;build/classes/src"
+               includeAntRuntime = "false">
+        </javac>
+    </target>
+
+    <target name="runTest" depends="compileTest">
+        <junit>
+            <classpath>
+                <pathelement location="build/classes/src" />
+                <pathelement location="build/classes/test" />
+                <pathelement location="dependencies/test/junit-4.10.jar"/>
+            </classpath>
+            <batchtest>
+                <fileset dir="build/classes/test">
+                    <include name="**/*Test*" />
+                    <exclude name="**/*$*.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type = "brief" usefile = "false"/>
+        </junit>
+    </target>
+</project>
+

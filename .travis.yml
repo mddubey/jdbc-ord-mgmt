@@ -9,4 +9,3 @@ script:
 jdk:
   - oraclejdk7
   - openjdk7
-

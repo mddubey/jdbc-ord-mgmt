@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SampleJDBCTest {
-    static final String DB_URL = "jdbc:mysql://localhost:3306/jdbc-test";
+    static final String DB_URL = "jdbc:mysql://10.4.31.18:3306/jdbc-test";
 
     static final String USER = "mritunjay";
     static final String PASS = "12345";
@@ -33,6 +33,11 @@ public class SampleJDBCTest {
 
         stmt.execute(sql);
         stmt.close();
+
+        stmt = conn.createStatement();
+        sql = "alter table product_info add constraint primary key(product_id)";
+        stmt.execute(sql);
+        stmt.close();
     }
 
     @After
@@ -47,8 +52,16 @@ public class SampleJDBCTest {
     public static void closeConnection() throws SQLException {
         conn.close();
     }
-    @Test
-    public void test(){
 
+    @Test
+    public void test() throws SQLException {
+        stmt = conn.createStatement();
+        String sql = "insert into product_info values(1,'RICE',20,'GRAIN')";
+        int expectedAffetcedRows = 1;
+
+        int actualAffectedRows = stmt.executeUpdate(sql);
+        stmt.close();
+
+        Assert.assertEquals(expectedAffetcedRows, actualAffectedRows);
     }
 }

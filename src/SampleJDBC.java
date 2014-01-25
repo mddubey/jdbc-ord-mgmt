@@ -1,4 +1,4 @@
-        import java.sql.*;
+import java.sql.*;
 
 public class SampleJDBC {
     static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
@@ -10,11 +10,11 @@ public class SampleJDBC {
     public static void main(String[] args) {
         Connection conn = null;
         Statement stmt = null;
-        try{
+        try {
             Class.forName(JDBC_DRIVER);
 
             System.out.println("Connecting to database...");
-            conn = DriverManager.getConnection(DB_URL,USER,PASS);
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             System.out.println("Creating statement...");
             stmt = conn.createStatement();
@@ -22,8 +22,8 @@ public class SampleJDBC {
             sql = "SELECT rollNo,name from student";
             ResultSet rs = stmt.executeQuery(sql);
 
-            while(rs.next()){
-                int rollNo  = rs.getInt("rollNo");
+            while (rs.next()) {
+                int rollNo = rs.getInt("rollNo");
                 String name = rs.getString("name");
 
                 System.out.println("Roll No: " + rollNo);
@@ -33,21 +33,21 @@ public class SampleJDBC {
             stmt.close();
             conn.close();
 
-        }catch(SQLException se){
+        } catch (SQLException se) {
             se.printStackTrace();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally{
-            try{
-                if(stmt!=null)
+        } finally {
+            try {
+                if (stmt != null)
                     stmt.close();
-            }catch(SQLException se2){
+            } catch (SQLException se2) {
                 System.err.println("nothing we can do");
             }
-            try{
-                if(conn!=null)
+            try {
+                if (conn != null)
                     conn.close();
-            }catch(SQLException se){
+            } catch (SQLException se) {
                 se.printStackTrace();
             }
         }

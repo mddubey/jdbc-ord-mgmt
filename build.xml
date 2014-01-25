@@ -28,7 +28,7 @@
     </target>
 
     <target name="runTest" depends="compileTest">
-        <junit>
+        <junit >
             <classpath>
                 <pathelement location="build/classes/src"/>
                 <pathelement location="build/classes/test"/>

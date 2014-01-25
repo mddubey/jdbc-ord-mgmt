@@ -18,9 +18,12 @@
     </target>
 
     <target name = "compileTest" depends = "compile">
-        <javac srcdir = "test" destdir= "build/classes/test"
-               classpath="dependencies/test/junit-4.10.jar;build/classes/src"
-               includeAntRuntime = "false">
+        <javac srcdir = "test" destdir= "build/classes/test" includeAntRuntime = "false">
+            <classpath>
+                <pathelement location="dependencies/mariadb/mariadb-java-client-1.1.5.jar"/>
+                <pathelement location="dependencies/test/junit-4.10.jar"/>
+                <pathelement location="build/classes/src"/>
+            </classpath>
         </javac>
     </target>
 
@@ -30,6 +33,7 @@
                 <pathelement location="build/classes/src" />
                 <pathelement location="build/classes/test" />
                 <pathelement location="dependencies/test/junit-4.10.jar"/>
+                <pathelement location="dependencies/mariadb/mariadb-java-client-1.1.5.jar"/>
             </classpath>
             <batchtest>
                 <fileset dir="build/classes/test">
@@ -41,4 +45,3 @@
         </junit>
     </target>
 </project>
-

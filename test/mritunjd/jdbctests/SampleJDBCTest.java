@@ -115,4 +115,56 @@ public class SampleJDBCTest {
         stmt.executeUpdate(insertOrder);
         stmt.close();
     }
+
+    @Test
+    public void testSelectsFieldsFromCustomerTable() throws Exception{
+        stmt = conn.createStatement();
+        String insertCustomer = "insert into customer values(101,'MRITUNJAY','C','JAVA','BIN',12345,'7689')";
+        String selectCustomer = "SELECT cust_id,cust_name,contactNo from customer";
+
+        stmt.executeUpdate(insertCustomer);
+        ResultSet custoemrRS = stmt.executeQuery(selectCustomer);
+
+        while (custoemrRS.next()){
+            Assert.assertEquals(101,custoemrRS.getInt("cust_id"));
+            Assert.assertEquals("MRITUNJAY",custoemrRS.getString("cust_name"));
+            Assert.assertEquals("7689",custoemrRS.getString("contactNo"));
+        }
+    }
+
+    @Test
+    public void testSelectsFieldsFromOrderTable() throws Exception{
+        stmt = conn.createStatement();
+        String insertCustomer = "insert into customer values(101,'MRITUNJAY','C:ProgramFiles','JAVA','BIN',12345,'7689')";
+        String insertOrder = "insert into order_info values(1,101,'2001-12-01','2001-12-05',1000);";
+        String selectOrder = "SELECT order_id, cust_id, date_of_order from order_info";
+
+        stmt.executeUpdate(insertCustomer);
+        stmt.executeUpdate(insertOrder);
+        ResultSet orderRS = stmt.executeQuery(selectOrder);
+
+        while (orderRS.next()){
+            Assert.assertEquals(1, orderRS.getInt(1));
+            Assert.assertEquals(101,orderRS.getInt(2));
+            Assert.assertEquals("2001-12-01", orderRS.getDate(3).toString());
+        }
+    }
+
+    @Test
+    public void testSelectsFieldsFromOrderTableWithConditions() throws Exception{
+        stmt = conn.createStatement();
+        String insertCustomer = "insert into customer values(101,'MRITUNJAY','C:ProgramFiles','JAVA','BIN',12345,'7689')";
+        String insertOrder = "insert into order_info values(1,101,'2001-12-01','2001-12-05',1000);";
+        String selectOrder = "SELECT order_id, cust_name, date_of_order from order_info,customer where order_info.cust_id = customer.cust_id";
+
+        stmt.executeUpdate(insertCustomer);
+        stmt.executeUpdate(insertOrder);
+        ResultSet orderRS = stmt.executeQuery(selectOrder);
+
+        while (orderRS.next()){
+            Assert.assertEquals(1, orderRS.getInt(1));
+            Assert.assertEquals("MRITUNJAY",orderRS.getString(2));
+            Assert.assertEquals("2001-12-01", orderRS.getDate(3).toString());
+        }
+    }
 }

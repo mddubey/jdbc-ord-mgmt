@@ -124,8 +124,7 @@ public class SampleJDBCTest {
         String insertOrder2 = "insert into order_info values(1,101,'2001-12-01','2001-12-05',1000);";
         stmt.addBatch(insertOrder);
         stmt.addBatch(insertOrder2);
-
-        stmt.executeBatch();
+        stmt.executeUpdate(insertOrder);
         stmt.close();
     }
 

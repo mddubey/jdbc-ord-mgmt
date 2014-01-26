@@ -2,13 +2,11 @@ package mritunjd.jdbctests;
 
 import org.junit.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+
 
 public class SampleJDBCTest {
-    static final String DB_URL = "jdbc:mysql://10.4.31.18:3306/jdbc-test";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/jdbc-test";
 
     static final String USER = "mritunjay";
     static final String PASS = "12345";
@@ -22,30 +20,72 @@ public class SampleJDBCTest {
     }
 
     @Before
-    public void setUp() throws SQLException {
+    public void createTablesAndRelations() throws SQLException {
+        // Create customers TABLE
         stmt = conn.createStatement();
-        String sql = "create table product_info(\n" +
-                "product_id int,\n" +
-                "product_name varchar(25),\n" +
-                "unit_price float,\n" +
-                "catagory varchar(10)\n" +
-                ")";
+        String sql = "create table customer(\n" +
+                "cust_id int,\n" +
+                "cust_name varchar(30),\n" +
+                "add1 varchar(15),\n" +
+                "add2 varchar(15),\n" +
+                "city varchar(15),\n" +
+                "pinNo int,\n" +
+                "contactNo varchar(13)\n" +
+                ");";
 
         stmt.execute(sql);
         stmt.close();
 
+//        Cretate primary key cust_id
         stmt = conn.createStatement();
-        sql = "alter table product_info add constraint primary key(product_id)";
+        sql = "\n" +
+                "alter table customer add constraint primary key(cust_id);";
         stmt.execute(sql);
         stmt.close();
+
+        // Create order TABLE
+        stmt = conn.createStatement();
+        sql = "create table order_info(\n" +
+                "order_id int,\n" +
+                "cust_id int,\n" +
+                "date_of_order date,\n" +
+                "date_of_delivery date,\n" +
+                "total_bill float\n" +
+                ");";
+
+        stmt.execute(sql);
+        stmt.close();
+
+//        Cretate primary key order_id
+        stmt = conn.createStatement();
+        sql = "\n" +
+                "alter table order_info add constraint primary key(order_id);";
+        stmt.execute(sql);
+        stmt.close();
+
+
+        //        Create foreign key cust_id
+        stmt = conn.createStatement();
+        sql = "alter table order_info add constraint order_fk_cust_id foreign key(cust_id)\n" +
+                "                references customer(cust_id);";
+        stmt.execute(sql);
+        stmt.close();
+
+
     }
 
     @After
     public void tearDown() throws SQLException {
         stmt = conn.createStatement();
-        String sql = "drop table product_info";
+        String sql = "drop table order_info";
         stmt.execute(sql);
         stmt.close();
+
+        stmt = conn.createStatement();
+        sql = "drop table customer";
+        stmt.execute(sql);
+        stmt.close();
+
     }
 
     @AfterClass
@@ -54,14 +94,25 @@ public class SampleJDBCTest {
     }
 
     @Test
-    public void test() throws SQLException {
+    public void testInsertsOneRowInEachTable() throws SQLException {
         stmt = conn.createStatement();
-        String sql = "insert into product_info values(1,'RICE',20,'GRAIN')";
-        int expectedAffetcedRows = 1;
+        String insertCustomer = "insert into customer values(101,'MRITUNJAY','C:ProgramFiles','JAVA','BIN',12345,'7689')";
+        String insertOrder = "insert into order_info values(1,101,'2001-12-01','2001-12-05',1000);";
 
-        int actualAffectedRows = stmt.executeUpdate(sql);
+        int affectedRowsInCustomer = stmt.executeUpdate(insertCustomer);
+        int affectedRowsInOrder = stmt.executeUpdate(insertOrder);
         stmt.close();
 
-        Assert.assertEquals(expectedAffetcedRows, actualAffectedRows);
+        Assert.assertEquals(1, affectedRowsInCustomer);
+        Assert.assertEquals(1, affectedRowsInOrder);
+    }
+
+    @Test(expected = SQLIntegrityConstraintViolationException.class)
+    public void InsertionFailsWhenCustomerIsNotPresentGivenInOrderSql() throws SQLException {
+        stmt = conn.createStatement();
+        String insertOrder = "insert into order_info values(1,101,'2001-12-01','2001-12-05',1000);";
+
+        stmt.executeUpdate(insertOrder);
+        stmt.close();
     }
 }

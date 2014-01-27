@@ -13,4 +13,4 @@ jdk:
 services: mysql
 
 before_script:
-  - mysql -e 'create database jdbc-test;'
+  - mysql -e 'create database jdbctest;'

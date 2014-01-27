@@ -6,7 +6,7 @@ import java.sql.*;
 
 
 public class SampleJDBCTest {
-    static final String DB_URL = "jdbc:mysql://localhost:3306/jdbc-test";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/jdbctest";
 
     static final String USER = "mritunjay";
     static final String PASS = "12345";
